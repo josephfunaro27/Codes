@@ -1,0 +1,58 @@
+import random
+
+print("Blackjack Game")
+
+deck = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"] * 4
+
+random.shuffle(deck)
+
+player_hand = [deck.pop(), deck.pop()]
+
+dealer_hand = [deck.pop()]
+
+def calculate_hand(hand):
+    total = 0
+    num_aces = 0
+    for card in hand:
+        if card == "Ace":
+            num_aces += 1
+            total += 11
+        elif card in ["Jack", "Queen", "King"]:
+            total += 10
+        else:
+            total += card
+    while num_aces > 0 and total > 21:
+        total -= 10
+        num_aces -= 1
+    return total
+
+while True:
+    print("Player hand:", player_hand, "(", calculate_hand(player_hand), ")")
+    print("Dealer hand:", [dealer_hand[0], "???"])
+    if calculate_hand(player_hand) == 21:
+        print("Blackjack! You win!")
+        break
+    elif calculate_hand(player_hand) > 21:
+        print("Bust! You lose!")
+        break
+    else:
+        choice = input("Do you want to hit or stand? ")
+        if choice.lower() == "hit":
+            player_hand.append(deck.pop())
+        else:
+            while calculate_hand(dealer_hand) < 17:
+                dealer_hand.append(deck.pop())
+            print("Player hand:", player_hand, "(", calculate_hand(player_hand), ")")
+            print("Dealer hand:", dealer_hand, "(", calculate_hand(dealer_hand), ")")
+            if calculate_hand(dealer_hand) > 21:
+                print("Dealer bust! You win!")
+                break
+            elif calculate_hand(dealer_hand) > calculate_hand(player_hand):
+                print("Dealer wins!")
+                break
+            elif calculate_hand(player_hand) > calculate_hand(dealer_hand):
+                print("You win!")
+                break
+            else:
+                print("Tie!")
+                break
